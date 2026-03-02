@@ -45,6 +45,9 @@ def create_student():
     if not name or not course:
         return jsonify({"error": "missing name and/or course"}), 404
 
+    if mark < 0 or mark > 100:
+        return jsonify({"error": "mark must be within 0-100"}), 404
+
     try:
         new_student = db.insert_student(name, course, mark)
         return jsonify(new_student), 200
@@ -71,6 +74,8 @@ def update_student(student_id):
         updated_student = db.update_student(student_id, name=name, course=course, mark=mark)
         if not updated_student:
             return jsonify({"error": "student not found"}), 404
+        if mark < 0 or mark > 100:
+            return jsonify({"error": "mark must be within 0-100"}), 404
         return jsonify(updated_student), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 404
